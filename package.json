@@ -9,10 +9,15 @@
     "lint": "next lint"
   },
   "dependencies": {
+    "@clerk/nextjs": "^4.27.5",
+    "@uploadthing/react": "^6.0.2",
+    "mongoose": "^8.0.3",
     "next": "14.0.3",
     "react": "^18",
     "react-dom": "^18",
-    "tailwindcss-animate": "^1.0.7"
+    "svix": "^1.15.0",
+    "tailwindcss-animate": "^1.0.7",
+    "uploadthing": "^6.0.4"
   },
   "devDependencies": {
     "@types/node": "^20",
