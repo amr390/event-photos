@@ -186,8 +186,8 @@ const config: Config = {
         "light-2": "#EFEFEF",
         "light-3": "#7878A3",
         "light-4": "#5C5C7B",
-        "grai-1": "#697C89",
-        gassmorphism: "rgba(16, 16, 18, 0.6)",
+        "gray-1": "#697C89",
+        glassmorphism: "rgba(16, 16, 18, 0.6)",
       },
       boxShadow: {
         "count-badge": "0px 0px 6px 2px rgba(219, 188, 159, 0.30)",
