@@ -4,25 +4,31 @@ import { currentUser } from "@clerk/nextjs";
 async function Page() {
   const user = await currentUser();
 
-  const userInfo = {};
-
-  // const userData = {
-  //   id: user?.id,
-  //   objectId: userInfo?._id,
-  //   username: userInfo?.username || user?.username,
-  //   name: userInfo?.name || user?.firstName || "",
-  //   bio: userInfo?.bio || "",
-  //   image: userInfo?.image || user.imageUrl,
-  // };
+  const userInfo = {
+    _id: "",
+    username: "",
+    name: "",
+    bio: "",
+    image: "",
+  };
 
   const userData = {
-    id: "1",
-    objectId: "1",
-    username: "amr",
-    name: "Toni",
-    bio: "maker",
-    image: "https://spoonsdevs.com",
+    id: user?.id,
+    objectId: userInfo?._id,
+    username: userInfo?.username || user?.username,
+    name: userInfo?.name || user?.firstName || "",
+    bio: userInfo?.bio || "",
+    image: userInfo?.image || user?.imageUrl,
   };
+
+  // const userData = {
+  //   id: "1",
+  //   objectId: "1",
+  //   username: "amr",
+  //   name: "Toni",
+  //   bio: "maker",
+  //   image: "https://spoonsdevs.com",
+  // };
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">
@@ -30,7 +36,7 @@ async function Page() {
       <p className="mt-3 text-base-regular text-light-2">
         Complete your profile now to use event photos
       </p>
-      <section className="mt-9 bg-dar-2 p-10">
+      <section className="mt-9 bg-dark-2 p-10">
         <AccountProfile {...{ user: userData, btnTitle: "title" }} />
       </section>
     </main>
