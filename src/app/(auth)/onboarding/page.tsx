@@ -1,34 +1,21 @@
 import AccountProfile from "@/components/forms/AccountProfile";
+import { fetchUser } from "@/lib/actions/user.actions";
 import { currentUser } from "@clerk/nextjs";
 
 async function Page() {
   const user = await currentUser();
+  if (!user) return null;
 
-  const userInfo = {
-    _id: "",
-    username: "",
-    name: "",
-    bio: "",
-    image: "",
-  };
+  const userInfo = await fetchUser(user.id);
 
   const userData = {
-    id: user?.id,
+    id: user.id,
     objectId: userInfo?._id,
-    username: userInfo?.username || user?.username,
-    name: userInfo?.name || user?.firstName || "",
+    username: userInfo?.username || user.username,
+    name: userInfo?.name || user.firstName || "",
     bio: userInfo?.bio || "",
-    image: userInfo?.image || user?.imageUrl,
+    image: userInfo?.image || user.imageUrl,
   };
-
-  // const userData = {
-  //   id: "1",
-  //   objectId: "1",
-  //   username: "amr",
-  //   name: "Toni",
-  //   bio: "maker",
-  //   image: "https://spoonsdevs.com",
-  // };
 
   return (
     <main className="mx-auto flex max-w-3xl flex-col justify-start px-10 py-20">

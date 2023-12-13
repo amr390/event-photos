@@ -36,10 +36,12 @@ interface Props {
 }
 
 const AccountProfile = ({ user }: Props) => {
-  const [files, setFiles] = useState<File[]>([]);
-  const { startUpload } = useUploadThing("media");
   const router = useRouter();
   const pathname = usePathname();
+  const { startUpload } = useUploadThing("media");
+
+  const [files, setFiles] = useState<File[]>([]);
+
   const form = useForm({
     resolver: zodResolver(userValidation),
     defaultValues: {
@@ -74,6 +76,7 @@ const AccountProfile = ({ user }: Props) => {
       fileReader.readAsDataURL(file);
     }
   };
+
   const onSubmit = async (values: z.infer<typeof userValidation>) => {
     const blob = values.profile_photo;
     const hasImageChanged = isBase64Image(blob);
