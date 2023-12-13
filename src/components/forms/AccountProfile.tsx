@@ -14,7 +14,7 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 
-import { userValidation } from "@/lib/validations/user";
+import { UserValidation } from "@/lib/validations/user";
 import Image from "next/image";
 import { Textarea } from "../ui/textarea";
 import { useState } from "react";
@@ -43,7 +43,7 @@ const AccountProfile = ({ user }: Props) => {
   const [files, setFiles] = useState<File[]>([]);
 
   const form = useForm({
-    resolver: zodResolver(userValidation),
+    resolver: zodResolver(UserValidation),
     defaultValues: {
       profile_photo: user?.image || "",
       name: user?.name || "",
@@ -77,7 +77,7 @@ const AccountProfile = ({ user }: Props) => {
     }
   };
 
-  const onSubmit = async (values: z.infer<typeof userValidation>) => {
+  const onSubmit = async (values: z.infer<typeof UserValidation>) => {
     const blob = values.profile_photo;
     const hasImageChanged = isBase64Image(blob);
     if (hasImageChanged) {
