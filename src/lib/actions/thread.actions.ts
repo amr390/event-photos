@@ -126,3 +126,41 @@ export async function deleteThread(id: string, path: string) {
     throw new Error("Failed to delete thread ${(error as Error).message}");
   }
 }
+
+export async function addCommentToThread(
+  threadId: string,
+  commentText: string,
+  userId: string,
+  path: string,
+) {
+  connectToDB();
+  try {
+    // Find the original thread by  its IDs
+    const originalThread = await Thread.findById(threadId);
+
+    if (!originalThread) {
+      throw new Error("Thread not found");
+    }
+
+    // Create the new comment thread
+    const commentThread = new Thread({
+      text: commentText,
+      author: userId,
+      parentId: threadId, //set the parent id to the original thread id
+    });
+
+    // Save the comment thread to the database
+    const savedCommentThread = await commentThread.save();
+
+    // Add the comment threads id to the originals thread chilcren Array
+    originalThread.children.push(savedCommentThread._id);
+
+    await originalThread.save();
+
+    // Invalidate server caches and refresh data
+    revalidatePath(path);
+  } catch (error) {
+    console.error("Error while adding comment to thread", error);
+    throw new Error("Unable to add comment to thread");
+  }
+}
