@@ -164,3 +164,37 @@ export async function addCommentToThread(
     throw new Error("Unable to add comment to thread");
   }
 }
+
+export async function fetchThreadById(id: string): Promise<any> {
+  connectToDB();
+  try {
+    const thread = await Thread.findById(id)
+      .populate({ path: "author", model: User, select: "_id id name image" })
+      .populate({
+        path: "community",
+        model: Community,
+        select: "_id id name image",
+      })
+      .populate({
+        path: "children",
+        populate: [
+          { path: "author", model: User, select: "_id id name image" },
+          {
+            path: "children",
+            model: Thread,
+            populate: {
+              path: "author",
+              model: User,
+              select: "_id id name image",
+            },
+          },
+        ],
+      })
+      .exec();
+    return thread;
+  } catch (error) {
+    throw new Error(
+      `Couldn't retrieve thread from db: ${(error as Error).message}`,
+    );
+  }
+}

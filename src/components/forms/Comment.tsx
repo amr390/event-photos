@@ -3,11 +3,11 @@
 import { z } from "zod";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
-import { Form, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { CommentValidation } from "@/lib/validations/thread";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { addCommentToThread } from "@/lib/actions/thread.actions";
-import { FormControl, FormField, FormItem, FormLabel } from "../ui/form";
+import { Form, FormControl, FormField, FormItem, FormLabel } from "../ui/form";
 import { Input } from "../ui/input";
 import { Button } from "../ui/button";
 

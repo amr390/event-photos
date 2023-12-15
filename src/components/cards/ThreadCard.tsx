@@ -101,7 +101,7 @@ function ThreadCard({
                 />
               </div>
 
-              {isComment && comments.length > 0 && (
+              {isComment && comments?.length > 0 && (
                 <Link href={`/thread/${id}`}>
                   <p className="mt-1 text-subtle-medium text-gray-1">
                     {comments.length} repl{comments.length > 1 ? "ies" : "y"}
@@ -126,7 +126,7 @@ function ThreadCard({
           {comments.slice(0, 2).map((comment, index) => (
             <Image
               key={index}
-              src={comment.author.image}
+              src={comment.author?.image}
               alt={`user_${index}`}
               width={24}
               height={24}
