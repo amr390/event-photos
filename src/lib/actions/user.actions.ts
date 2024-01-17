@@ -6,15 +6,21 @@ import { connectToDB } from "../mongoose";
 import Community from "../models/community.model";
 import Thread from "../models/thread.model";
 import { FilterQuery, SortOrder } from "mongoose";
+import { handleError } from "../utils";
+import { CreateUserPayload, UpdateUserPayload } from "@/types";
+import Event from "../models/event.model";
+import Order from "../models/order.model";
 
-type UpdateUserPayload = {
-  userId: string;
-  username: string;
-  name: string;
-  bio: string;
-  image: string;
-  path: string;
-};
+export async function createUser(user: CreateUserPayload) {
+  try {
+    await connectToDB();
+
+    const newUser = await User.create(user);
+    return JSON.parse(JSON.stringify(newUser));
+  } catch (err) {
+    handleError(err);
+  }
+}
 
 export async function updateUser({
   userId,
@@ -40,6 +46,37 @@ export async function updateUser({
     throw new Error(
       `Failed to create/update user: ${(error as Error).message}`,
     );
+  }
+}
+
+export async function deleteUser(id: string) {
+  try {
+    connectToDB();
+
+    const userToDelete = await User.findById(id);
+
+    if (!userToDelete) {
+      throw new Error("User not found");
+    }
+
+    await Promise.all([
+      Event.updateMany(
+        { _id: { $in: userToDelete.events } },
+        { $pull: { organizer: userToDelete._id } },
+      ),
+
+      Order.updateMany(
+        { _id: { $in: userToDelete.orders } },
+        { $unset: { buyer: 1 } },
+      ),
+    ]);
+
+    const deletedUser = await User.findByIdAndDelete(userToDelete._id);
+    revalidatePath("/");
+
+    return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
+  } catch (err) {
+    handleError(err);
   }
 }
 
