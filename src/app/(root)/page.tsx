@@ -1,5 +1,6 @@
 import ThreadCard from "@/components/cards/ThreadCard";
 import Collection from "@/components/shared/Collection";
+import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { getAllEvents } from "@/lib/actions/event.actions";
 import { fetchPosts } from "@/lib/actions/thread.actions";

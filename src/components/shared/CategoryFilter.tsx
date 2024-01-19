@@ -1,9 +1,15 @@
 "use client";
 
 import { ICategory } from "@/lib/models/category.model";
-import { removeKeysFromQuery } from "@/lib/utils";
+import { formUrlQuery, removeKeysFromQuery } from "@/lib/utils";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useEffect, useState } from "react";
+import {
+  Select,
+  SelectTrigger,
+  SelectContent,
+  SelectValue,
+} from "../ui/select";
 
 const CategoryFilter = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
@@ -39,4 +45,13 @@ const CategoryFilter = () => {
 
     router.push(newUrl, { scroll: false });
   };
+
+  return (
+    <Select onValueChange={(value: string) => onSelectCategory(value)}>
+      <SelectTrigger className="select-field">
+        <SelectValue placeholder="Category" />
+      </SelectTrigger>
+      <SelectContent></SelectContent>
+    </Select>
+  );
 };
