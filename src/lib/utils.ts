@@ -62,3 +62,10 @@ export function formUrlQuery({ params, key, value }: UrlQueryParams) {
     { skipNull: true },
   );
 }
+
+export function removeKeysFromQuery(params: {
+  params: string;
+  keysToRemove: string[];
+}) {
+  return "";
+}
