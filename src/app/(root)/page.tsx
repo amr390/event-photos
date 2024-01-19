@@ -1,11 +1,9 @@
-import ThreadCard from "@/components/cards/ThreadCard";
+import CategoryFilter from "@/components/shared/CategoryFilter";
 import Collection from "@/components/shared/Collection";
 import Search from "@/components/shared/Search";
 import { Button } from "@/components/ui/button";
 import { getAllEvents } from "@/lib/actions/event.actions";
-import { fetchPosts } from "@/lib/actions/thread.actions";
 import { SearchParamProps } from "@/types";
-import { currentUser } from "@clerk/nextjs";
 import Link from "next/link";
 
 export default async function Home({ searchParams }: SearchParamProps) {

@@ -27,6 +27,12 @@ const nextConfig = {
       },
     ],
   },
+  webpack: (config) => {
+    Object.assign(config.resolve.alias, {
+      aws4: false,
+    });
+    return config;
+  },
 };
 
 module.exports = nextConfig;

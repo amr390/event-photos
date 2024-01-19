@@ -1,9 +1,9 @@
+"user server";
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
 import { handleError } from "../utils";
-import { connectToDB } from "../mongoose";
 import { ObjectId } from "mongodb";
-import Order from "../models/order.model";
+import Order from "../database/models/order.model";
 import {
   CheckoutOrderParams,
   CreateOrderParams,
@@ -11,6 +11,7 @@ import {
   GetOrdersByUserParams,
 } from "@/types";
 import { User } from "@clerk/nextjs/server";
+import { connectToDB } from "../database";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
   const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);

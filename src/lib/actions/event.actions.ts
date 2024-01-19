@@ -1,9 +1,10 @@
+"use server";
+
 import { revalidatePath } from "next/cache";
-import Category from "../models/category.model";
-import User from "../models/user.model";
-import { connectToDB } from "../mongoose";
+import Category from "../database/models/category.model";
+import User from "../database/models/user.model";
 import { handleError } from "../utils";
-import Event from "../models/event.model";
+import Event from "../database/models/event.model";
 import {
   CreateEventParams,
   DeleteEventParams,
@@ -12,6 +13,7 @@ import {
   GetRelatedEventsByCategoryParams,
   UpdateEventParams,
 } from "@/types";
+import { connectToDB } from "../database";
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: "i" } });
@@ -129,7 +131,8 @@ export async function getAllEvents({
       totalPages: Math.ceil(eventsCount / limit),
     };
   } catch (error) {
-    handleError(error);
+    console.log(error);
+    // handleError(error);
   }
 }
 

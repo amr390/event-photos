@@ -110,6 +110,7 @@ export type Event = {
   };
 };
 
+// ++ Category Params
 export type CreateCategoryParams = {
   categoryName: string;
 };

@@ -69,3 +69,7 @@ export function removeKeysFromQuery(params: {
 }) {
   return "";
 }
+
+export function parseMongoToJson(resource: unknown) {
+  return resource ? JSON.parse(JSON.stringify(resource)) : JSON.parse([]);
+}

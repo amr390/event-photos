@@ -1,15 +1,15 @@
 "use server";
 
 import { revalidatePath } from "next/cache";
-import User from "../models/user.model";
-import { connectToDB } from "../mongoose";
-import Community from "../models/community.model";
-import Thread from "../models/thread.model";
+import User from "../database/models/user.model";
+import { connectToDB } from "../database/";
+import Community from "../database/models/community.model";
+import Thread from "../database/models/thread.model";
 import { FilterQuery, SortOrder } from "mongoose";
 import { handleError } from "../utils";
 import { CreateUserPayload, UpdateUserPayload } from "@/types";
-import Event from "../models/event.model";
-import Order from "../models/order.model";
+import Event from "../database/models/event.model";
+import Order from "../database/models/order.model";
 
 export async function createUser(user: CreateUserPayload) {
   try {
