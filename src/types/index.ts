@@ -109,3 +109,35 @@ export type Event = {
     name: string;
   };
 };
+
+export type CreateCategoryParams = {
+  categoryName: string;
+};
+
+// ++ Order
+export type CheckoutOrderParams = {
+  eventTitle: string;
+  eventId: string;
+  price: string;
+  free: boolean;
+  customerId: string;
+};
+
+export type CreateOrderParams = {
+  stripeId: string;
+  eventId: string;
+  customerId: string;
+  totalAmount: string;
+  dateCreated: Date;
+};
+
+export type GetOrdersByEventParams = {
+  eventId: string;
+  searchString: string;
+};
+
+export type GetOrdersByUserParams = {
+  userId: string;
+  limit?: number;
+  page: string | number | null;
+};

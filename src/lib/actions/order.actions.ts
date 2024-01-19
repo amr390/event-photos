@@ -1,11 +1,19 @@
+import Stripe from "stripe";
 import { redirect } from "next/navigation";
 import { handleError } from "../utils";
 import { connectToDB } from "../mongoose";
+import { ObjectId } from "mongodb";
 import Order from "../models/order.model";
-import { isObjectIdOrHexString } from "mongoose";
+import {
+  CheckoutOrderParams,
+  CreateOrderParams,
+  GetOrdersByEventParams,
+  GetOrdersByUserParams,
+} from "@/types";
+import { User } from "@clerk/nextjs/server";
 
 export const checkoutOrder = async (order: CheckoutOrderParams) => {
-  const stripe = new String(process.env.STRIPE_SECRET_KEY!);
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!);
 
   const price = order.free ? 0 : Number(order.price);
 
@@ -112,4 +120,36 @@ export async function getOrdersByUser({
   userId,
   limit = 3,
   page,
-}: GetOrdersByUserParams) {}
+}: GetOrdersByUserParams) {
+  try {
+    await connectToDB();
+
+    const skipAmount = (Number(page) - 1) * limit;
+    const conditions = { customer: userId };
+
+    const orders = await Order.distinct("event._id")
+      .find(conditions)
+      .sort({ dateCreated: "desc" })
+      .skip(skipAmount)
+      .limit(limit)
+      .populate({
+        path: "event",
+        model: Event,
+        populate: {
+          path: "owner",
+          model: User,
+          select: "_id firstName lastName",
+        },
+      });
+
+    const orderCount =
+      await Order.distinct("event._id").countDocuments(conditions);
+
+    return {
+      data: JSON.parse(JSON.stringify(orders)),
+      totalPages: Math.ceil(orderCount / limit),
+    };
+  } catch (error) {
+    handleError(error);
+  }
+}
