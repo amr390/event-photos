@@ -1,4 +1,4 @@
-"user server";
+"use server";
 import Stripe from "stripe";
 import { redirect } from "next/navigation";
 import { handleError } from "../utils";
