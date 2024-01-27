@@ -20,7 +20,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
 
   return (
     <>
-      <section className="bg-primary-50 bg-dotted-pattern bg-contain py-5 md:py-10">
+      <section className="bg-gray-50 bg-dotted-pattern bg-contain py-5 md:py-10">
         <div className="wrapper grid grid-cols-1 gap-5 md:grid-cols-2 2xl:gap-0">
           <h1 className="h1-bold">
             Host, Connect, Celebrate: Your Events, our Platform
