@@ -5,5 +5,8 @@
     "standard",
     "plugin:tailwindcss/recommended",
     "prettier"
-  ]
+  ],
+  "rules": {
+    "quotes": [2, "single", { "avoidEscape": true }]
+  }
 }
