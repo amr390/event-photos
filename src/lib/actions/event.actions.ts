@@ -1,10 +1,10 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import Category from "../database/models/category.model";
-import User from "../database/models/user.model";
-import { handleError } from "../utils";
-import Event from "../database/models/event.model";
+import { revalidatePath } from 'next/cache';
+import Category from '../database/models/category.model';
+import User from '../database/models/user.model';
+import { handleError } from '../utils';
+import Event, { IEvent } from '../database/models/event.model';
 import {
   CreateEventParams,
   DeleteEventParams,
@@ -12,29 +12,31 @@ import {
   GetEventsByUserParams,
   GetRelatedEventsByCategoryParams,
   UpdateEventParams,
-} from "@/types";
-import { connectToDB } from "../database";
+} from '@/types';
+import { connectToDB } from '../database';
+import eventsJson from '../fixtures/events.json';
+import { EventDTO } from '@/constants';
 
 const getCategoryByName = async (name: string) => {
-  return Category.findOne({ name: { $regex: name, $options: "i" } });
+  return Category.findOne({ name: { $regex: name, $options: 'i' } });
 };
 
 const populateEvent = (query: any) => {
   return query
     .populate({
-      path: "organizer",
+      path: 'owner',
       model: User,
-      select: "_id firstName lastName",
+      select: '_id firstName lastName',
     })
-    .populate({ path: "category", model: Category, select: "_id name" });
+    .populate({ path: 'category', model: Category, select: '_id name' });
 };
 
 export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDB();
 
-    const organizer = await User.findById(userId);
-    if (!organizer) throw new Error("Organizer not found");
+    const owner = await User.findById(userId);
+    if (!owner) throw new Error('Organizer not found');
 
     revalidatePath(path);
     const newEvent = await Event.create({
@@ -54,7 +56,7 @@ export async function getEventById(eventId: string) {
     await connectToDB();
 
     const event = await populateEvent(Event.findById(eventId));
-    if (!event) throw new Error("Event not found");
+    if (!event) throw new Error('Event not found');
 
     return JSON.parse(JSON.stringify(event));
   } catch (error) {
@@ -69,7 +71,7 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
     const eventToUpdate = await Event.findById(event._id);
 
     if (!eventToUpdate || eventToUpdate.owner.toHexString() !== userId) {
-      throw new Error("Unauthorized or event not found");
+      throw new Error('Unauthorized or event not found');
     }
 
     const updatedEvent = await Event.findByIdAndUpdate(
@@ -95,6 +97,15 @@ export async function deleteEvent({ eventId, path }: DeleteEventParams) {
   }
 }
 
+export async function getFixtureEvents() {
+  const eventsCount = 11;
+  const events: EventDTO[] = eventsJson;
+  return {
+    data: JSON.parse(JSON.stringify(events)),
+    totalPages: eventsCount,
+  };
+}
+
 export async function getAllEvents({
   query,
   limit = 6,
@@ -105,7 +116,7 @@ export async function getAllEvents({
     await connectToDB();
 
     const titleCondition = query
-      ? { title: { $regex: query, $options: "i" } }
+      ? { title: { $regex: query, $options: 'i' } }
       : {};
     const categoryCondition = category
       ? await getCategoryByName(category)
@@ -119,7 +130,7 @@ export async function getAllEvents({
 
     const skipAmount = (Number(page) - 1) * limit;
     const eventsQuery = Event.find(conditions)
-      .sort({ dateCreated: "desc" })
+      .sort({ dateCreated: 'desc' })
       .skip(skipAmount)
       .limit(limit);
 
@@ -151,7 +162,7 @@ export async function getRelatedEventsByCategory({
     };
 
     const eventsQuery = Event.find(conditions)
-      .sort({ dateCreated: "desc" })
+      .sort({ dateCreated: 'desc' })
       .skip(skipAmount)
       .limit(limit);
 
@@ -175,11 +186,11 @@ export async function getEventsByUser({
   try {
     await connectToDB();
 
-    const conditions = { organizer: userId };
+    const conditions = { owner: userId };
     const skipAmount = (page - 1) * limit;
 
     const eventsQuery = Event.find(conditions)
-      .sort({ dateCreated: "desc" })
+      .sort({ dateCreated: 'desc' })
       .skip(skipAmount)
       .limit(limit);
 

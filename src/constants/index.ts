@@ -50,6 +50,19 @@ export const headerLinks = [
   { route: 'route', label: 'value' },
 ];
 
+export type EventDTO = {
+  title: string;
+  description: string;
+  location: string;
+  imageUrl: string;
+  startDate: string;
+  endDate: string;
+  categoryId: string;
+  price: string;
+  isFree: boolean;
+  url: string;
+};
+
 export const eventDefaults = {
   title: '',
   description: '',
