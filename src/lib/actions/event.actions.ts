@@ -81,6 +81,8 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
     );
 
     revalidatePath(path);
+
+    return JSON.parse(JSON.stringify(updatedEvent));
   } catch (error) {
     handleError(error);
   }
