@@ -1,10 +1,6 @@
 'use server';
 
-import { revalidatePath } from 'next/cache';
-import Category from '../database/models/category.model';
-import User from '../database/models/user.model';
-import { handleError } from '../utils';
-import Event, { IEvent } from '../database/models/event.model';
+import { EventDTO } from '@/constants';
 import {
   CreateEventParams,
   DeleteEventParams,
@@ -13,9 +9,13 @@ import {
   GetRelatedEventsByCategoryParams,
   UpdateEventParams,
 } from '@/types';
+import { revalidatePath } from 'next/cache';
 import { connectToDB } from '../database';
+import Category from '../database/models/category.model';
+import Event from '../database/models/event.model';
+import User from '../database/models/user.model';
 import eventsJson from '../fixtures/events.json';
-import { EventDTO } from '@/constants';
+import { handleError } from '../utils';
 
 const getCategoryByName = async (name: string) => {
   return Category.findOne({ name: { $regex: name, $options: 'i' } });
@@ -35,14 +35,15 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
   try {
     await connectToDB();
 
-    const owner = await User.findById(userId);
-    if (!owner) throw new Error('Organizer not found');
+    const owner = await User.findOne({ id: userId });
+
+    if (!owner) throw new Error('Owner not found');
 
     revalidatePath(path);
     const newEvent = await Event.create({
       ...event,
       category: event.categoryId,
-      organizer: userId,
+      owner: owner._id,
     });
 
     return JSON.parse(JSON.stringify(newEvent));
