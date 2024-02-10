@@ -5,7 +5,6 @@ const Create = () => {
   const { userId } = auth();
 
   //const userId = sessionClaims?.userId as string;
-  console.log('userId', userId);
 
   return (
     <>
