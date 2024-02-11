@@ -1,168 +1,82 @@
-import Image from "next/image";
-import Link from "next/link";
-// import DeleteEvent from "../forms/DeleteThread";
-import { formatDateString } from "@/lib/utils";
+import { IEvent } from '@/lib/database/models/event.model';
+import { auth } from '@clerk/nextjs';
+import Link from 'next/link';
+import Image from 'next/image';
+import { formatDateTime } from '@/lib/utils';
 
-interface Props {
-  id: string;
-  currentUserId: string;
-  parentId: string | null;
-  content: string;
-  author: {
-    name: string;
-    image: string;
-    id: string;
-  };
-  community: {
-    id: string;
-    name: string;
-    image: string;
-  } | null;
-  createdAt: string;
-  comments: {
-    author: {
-      image: string;
-    };
-  }[];
-  isComment?: boolean;
-}
+type CardProps = {
+  event: IEvent;
+  hasOrderLink?: boolean;
+  hidePrice?: boolean;
+};
 
-function EventCard({
-  id,
-  currentUserId,
-  parentId,
-  content,
-  author,
-  community,
-  createdAt,
-  comments,
-  isComment,
-}: Props) {
+const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
+  const { userId } = auth();
+
+  const isEventCreator = userId === event.owner._id;
+
   return (
-    <article
-      className={`flex w-full flex-col rounded-xl ${
-        isComment ? "px-0 xs:px-7" : "bg-dark-2 p-7"
-      }`}
-    >
-      <div className="flex items-start justify-between">
-        <div className="flex w-full flex-1 flex-row gap-4">
-          <div className="flex flex-col items-center">
-            <Link href={`/profile/${author.id}`} className="relative h-11 w-11">
-              <Image
-                src={author.image}
-                alt="user_community_image"
-                fill
-                className="cursor-pointer rounded-full"
-              />
-            </Link>
-            <div className="thread-card_bar" />
-          </div>
-
-          <div className="flex w-full flex-col">
-            <Link href={`/profile/${author.id}`} className="w-fit">
-              <h4 className="cursor-pointer text-base-semibold text-light-1">
-                {author.name}
-              </h4>
-            </Link>
-
-            <p className="mt-2 text-small-regular text-light-2"> {content}</p>
-
-            <div className={`${isComment && "mb-10"} mt-4 flex flex-col gap-3`}>
-              <div className="flex gap-3.5">
-                <Image
-                  src="/assets/heart-gray.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-                <Link href={`/thread/${id}`}>
-                  <Image
-                    src="/assets/reply.svg"
-                    alt="heart"
-                    width={24}
-                    height={24}
-                    className="cursor-pointer object-contain"
-                  />
-                </Link>
-                <Image
-                  src="/assets/repost.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-                <Image
-                  src="/assets/share.svg"
-                  alt="heart"
-                  width={24}
-                  height={24}
-                  className="cursor-pointer object-contain"
-                />
-              </div>
-
-              {isComment && comments?.length > 0 && (
-                <Link href={`/thread/${id}`}>
-                  <p className="mt-1 text-subtle-medium text-gray-1">
-                    {comments.length} repl{comments.length > 1 ? "ies" : "y"}
-                  </p>
-                </Link>
-              )}
-            </div>
-          </div>
-        </div>
-
-        {/* <DeleteEvent */}
-        {/*   threadId={JSON.stringify(id)} */}
-        {/*   currentUserId={currentUserId} */}
-        {/*   authorId={author.id} */}
-        {/*   parentId={parentId} */}
-        {/*   isComment={isComment} */}
-        {/* /> */}
-      </div>
-
-      {!isComment && comments.length > 0 && (
-        <div className="ml-1 mt-3 flex items-center gap-2">
-          {comments.slice(0, 2).map((comment, index) => (
+    <div className="group relative flex min-h-[380px] w-pull max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
+      <Link
+        href={`/events/${event._id}`}
+        style={{ backgroundImage: `url(${event.imageLink})` }}
+        className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
+      />
+      {isEventCreator && !hidePrice && (
+        <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
+          <Link href={`/events/${event.id}/update`}>
             <Image
-              key={index}
-              src={comment.author?.image}
-              alt={`user_${index}`}
-              width={24}
-              height={24}
-              className={`${index !== 0 && "-ml-5"} rounded-full object-cover`}
+              src="/assets/icons/edit.svg"
+              alt="edit"
+              width={20}
+              height={20}
             />
-          ))}
-
-          <Link href={`/thread/${id}`}>
-            <p className="mt-1 text-subtle-medium text-gray-1">
-              {comments.length} repl{comments.length > 1 ? "ies" : "y"}
-            </p>
           </Link>
+          {/* <DeleteConfirmation eventId={event.id}/> */}
         </div>
       )}
 
-      {!isComment && community && (
-        <Link
-          href={`/communities/${community.id}`}
-          className="mt-5 flex items-center"
-        >
-          <p className="text-subtle-medium text-gray-1">
-            {formatDateString(createdAt)}{" "}
-            {community && ` - ${community.name} Community`}
+      <div className="flex min-h-[230px] flex-col gap-3 p-5 md:gap-4">
+        {!hidePrice && (
+          <div className="flex gap-2">
+            <span className="p-semibold-14 w-min rounded-full  bg-grey-100 px-4 py-1 text-grey-60">
+              {event.isFree ? 'FREE' : `$${event.price}`}
+            </span>
+            <p className="p-semibold-14 w-min rounded-full bg-grey-500/10 px-4 py-1 text-grey-500 line-clamp-1">
+              {event.category.name}
+            </p>
+          </div>
+        )}
+
+        <p className="p-medium-16 p-medium-18 text-grey-500">
+          {formatDateTime(event.startDateTime).dateTime}
+        </p>
+        <Link href={`/event/${event.id}`}>
+          <p className="p-medium-16 md:p-medium-20 line-clamp-2 flex-1 text-black">
+            ${event.title}
+          </p>
+        </Link>
+
+        <div className="flex-between w-full">
+          <p className="p-medium-14 md:p-medium-16 text-grey-600">
+            {event.owner.firstName} {event.owner.lastName}
           </p>
 
-          <Image
-            src={community.image}
-            alt={community.name}
-            width={14}
-            height={14}
-            className="ml-1 rounded-full object-cover"
-          />
-        </Link>
-      )}
-    </article>
+          {hasOrderLink && (
+            <Link href={`/orders?eventId=${event._id}`} className="flex gap-2">
+              <p className="text-primary-500">Order Details</p>
+              <Image
+                src="/assets/icons/arrow.svg"
+                alt="search"
+                width={10}
+                height={10}
+              />
+            </Link>
+          )}
+        </div>
+      </div>
+    </div>
   );
-}
+};
 
 export default EventCard;

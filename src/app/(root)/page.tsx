@@ -1,15 +1,15 @@
-import CategoryFilter from "@/components/shared/CategoryFilter";
-import Collection from "@/components/shared/Collection";
-import Search from "@/components/shared/Search";
-import { Button } from "@/components/ui/button";
-import { getAllEvents } from "@/lib/actions/event.actions";
-import { SearchParamProps } from "@/types";
-import Link from "next/link";
+import CategoryFilter from '@/components/shared/CategoryFilter';
+import Collection from '@/components/shared/Collection';
+import Search from '@/components/shared/Search';
+import { Button } from '@/components/ui/button';
+import { getAllEvents } from '@/lib/actions/event.actions';
+import { SearchParamProps } from '@/types';
+import Link from 'next/link';
 
 export default async function Home({ searchParams }: SearchParamProps) {
   const page = Number(searchParams?.page) || 1;
-  const searchText = (searchParams?.query as string) || "";
-  const category = (searchParams?.category as string) || "";
+  const searchText = (searchParams?.query as string) || '';
+  const category = (searchParams?.category as string) || '';
 
   const events = await getAllEvents({
     query: searchText,
@@ -37,7 +37,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
             id nulla nisi laboris ex in Lorem sunt duis officia eiusmod. Aliqua
             reprehenderit commodo ex non excepteur duis sunt velit enim.
             Voluptate laboris sint cupidatat ullamco ut ea consectetur et est
-            culpa et culpa duis.{" "}
+            culpa et culpa duis.{' '}
           </p>
           <Button size="lg" asChild className="button w-full sm:w-fit">
             <Link href="#events">Explore now</Link>
@@ -49,7 +49,7 @@ export default async function Home({ searchParams }: SearchParamProps) {
         className="wrapper my-8 flex flex-col gap-8 md:gap-12"
       >
         <h2 className="h2-bold">
-          Trust by <br /> Thousands of Events{" "}
+          Trust by <br /> Thousands of Events{' '}
         </h2>
 
         <div className="flex w-full flex-col gap-5 md:flex-row">
