@@ -1,15 +1,15 @@
-"use server";
+'use server';
 
-import { revalidatePath } from "next/cache";
-import User from "../database/models/user.model";
-import { connectToDB } from "../database/";
-import Community from "../database/models/community.model";
-import Thread from "../database/models/thread.model";
-import { FilterQuery, SortOrder } from "mongoose";
-import { handleError } from "../utils";
-import { CreateUserPayload, UpdateUserPayload } from "@/types";
-import Event from "../database/models/event.model";
-import Order from "../database/models/order.model";
+import { revalidatePath } from 'next/cache';
+import User from '../database/models/user.model';
+import { connectToDB } from '../database/';
+import Community from '../database/models/community.model';
+import Thread from '../database/models/thread.model';
+import { FilterQuery, SortOrder } from 'mongoose';
+import { handleError } from '../utils';
+import { CreateUserPayload, UpdateUserPayload } from '@/types';
+import Event from '../database/models/event.model';
+import Order from '../database/models/order.model';
 
 export async function createUser(user: CreateUserPayload) {
   try {
@@ -39,7 +39,7 @@ export async function updateUser({
       { upsert: true },
     );
 
-    if (path === "/profile/edit") {
+    if (path === '/profile/edit') {
       revalidatePath(path);
     }
   } catch (error) {
@@ -56,7 +56,7 @@ export async function deleteUser(id: string) {
     const userToDelete = await User.findById(id);
 
     if (!userToDelete) {
-      throw new Error("User not found");
+      throw new Error('User not found');
     }
 
     await Promise.all([
@@ -72,7 +72,7 @@ export async function deleteUser(id: string) {
     ]);
 
     const deletedUser = await User.findByIdAndDelete(userToDelete._id);
-    revalidatePath("/");
+    revalidatePath('/');
 
     return deletedUser ? JSON.parse(JSON.stringify(deletedUser)) : null;
   } catch (err) {
@@ -83,10 +83,12 @@ export async function deleteUser(id: string) {
 export async function fetchUser(userId: string | null) {
   try {
     connectToDB();
-    return await User.findOne({ id: userId }).populate({
-      path: "communities",
+    const user = await User.findOne({ id: userId }).populate({
+      path: 'communities',
       model: Community,
     });
+
+    return JSON.parse(JSON.stringify(user));
   } catch (error) {
     throw new Error(`Failed to fetch ussr: ${(error as Error).message}`);
   }
@@ -98,21 +100,21 @@ export async function fetchuserPosts(userId: string) {
 
     // Find all threads authored by the user with the given userId
     const threads = await User.findOne({ id: userId }).populate({
-      path: "threads",
+      path: 'threads',
       model: Thread,
       populate: [
         {
-          path: "community",
+          path: 'community',
           model: Community,
-          select: "name id image _id",
+          select: 'name id image _id',
         },
         {
-          path: "children",
+          path: 'children',
           model: Thread,
           populate: {
-            path: "author",
+            path: 'author',
             model: User,
-            select: "name image id",
+            select: 'name image id',
           },
         },
       ],
@@ -120,17 +122,17 @@ export async function fetchuserPosts(userId: string) {
 
     return threads;
   } catch (error) {
-    console.error("Error fetching user thread: ", error);
+    console.error('Error fetching user thread: ', error);
     throw error;
   }
 }
 
 export async function fetchUsers({
   userId,
-  searchString = "",
+  searchString = '',
   pageNumber = 1,
   pageSize = 20,
-  sortBy = "desc",
+  sortBy = 'desc',
 }: {
   userId: string;
   searchString?: string;
@@ -145,7 +147,7 @@ export async function fetchUsers({
     const skipAmount = (pageNumber - 1) * pageSize;
 
     // Create a case-insensitive regular expression for the provided search expression
-    const regex = new RegExp(searchString, "i");
+    const regex = new RegExp(searchString, 'i');
 
     // Create an initial query object to filter Users
     const query: FilterQuery<typeof User> = {
@@ -153,7 +155,7 @@ export async function fetchUsers({
     };
 
     // if the search string is not empty add the $or operator to match existing Users
-    if (searchString.trim() !== "") {
+    if (searchString.trim() !== '') {
       query.$or = [
         { username: { $regex: regex } },
         { name: { $regex: regex } },
@@ -178,7 +180,7 @@ export async function fetchUsers({
 
     return { users, isNext };
   } catch (error) {
-    console.error("Error fetching users: ", error);
+    console.error('Error fetching users: ', error);
     throw error;
   }
 }
@@ -199,14 +201,14 @@ export async function getActivity(userId: string) {
       _id: { $in: childThreadIds },
       author: { $ne: userId }, // Exclude threads authored by the same user
     }).populate({
-      path: "author",
+      path: 'author',
       model: User,
-      select: "name image _id",
+      select: 'name image _id',
     });
 
     return replies;
   } catch (error) {
-    console.error("Failed fetching user activity", error);
+    console.error('Failed fetching user activity', error);
     throw error;
   }
 }
