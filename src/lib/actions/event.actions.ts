@@ -36,9 +36,9 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
     await connectToDB();
 
     const owner = await User.findOne({ id: userId });
-
     if (!owner) throw new Error('Owner not found');
 
+    debugger;
     revalidatePath(path);
     const newEvent = await Event.create({
       ...event,

@@ -22,7 +22,7 @@
     "@radix-ui/react-slot": "^1.0.2",
     "@radix-ui/react-tabs": "^1.0.4",
     "@types/react-datepicker": "^4.19.6",
-    "@uploadthing/react": "^6.2.3",
+    "@uploadthing/react": "^6.2.4",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.0.0",
     "lucide-react": "^0.294.0",
@@ -38,7 +38,7 @@
     "svix": "^1.15.0",
     "tailwind-merge": "^2.1.0",
     "tailwindcss-animate": "^1.0.7",
-    "uploadthing": "^6.4.0",
+    "uploadthing": "^6.4.1",
     "zod": "^3.22.4"
   },
   "devDependencies": {
