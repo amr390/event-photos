@@ -15,7 +15,6 @@ const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
   const { sessionClaims } = auth();
 
   const isEventCreator = sessionClaims?.userId === event.owner._id;
-  console.log('is userId saved in sessionclaims?', sessionClaims);
 
   return (
     <div className="group relative flex min-h-[380px] w-pull max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
