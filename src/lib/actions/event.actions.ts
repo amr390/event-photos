@@ -26,7 +26,7 @@ const populateEvent = (query: any) => {
     .populate({
       path: 'owner',
       model: User,
-      select: '_id firstName lastName',
+      select: '_id firstName lastName imageUrl',
     })
     .populate({ path: 'category', model: Category, select: '_id name' });
 };

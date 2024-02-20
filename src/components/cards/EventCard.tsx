@@ -12,15 +12,16 @@ type CardProps = {
 };
 
 const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const { userId } = auth();
+  const { sessionClaims } = auth();
 
-  const isEventCreator = userId === event.owner._id;
+  const isEventCreator = sessionClaims?.userId === event.owner._id;
+  console.log('is userId saved in sessionclaims?', sessionClaims);
 
   return (
     <div className="group relative flex min-h-[380px] w-pull max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/events/${event._id}`}
-        style={{ backgroundImage: `url(${event.imageLink})` }}
+        style={{ backgroundImage: `url(${event.imageUrl})` }}
         className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
       />
       {isEventCreator && !hidePrice && (
@@ -33,7 +34,7 @@ const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
               height={20}
             />
           </Link>
-          {/* <DeleteConfirmation eventId={event.id}/> */}
+          <DeleteConfirmation eventId={event.id} />
         </div>
       )}
 
@@ -76,7 +77,6 @@ const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
           )}
         </div>
       </div>
-      <DeleteConfirmation eventId={event._id} />
     </div>
   );
 };
