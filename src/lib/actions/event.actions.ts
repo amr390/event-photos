@@ -70,8 +70,12 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
     await connectToDB();
 
     const eventToUpdate = await Event.findById(event._id);
+    const user = await User.findOne({ id: userId });
 
-    if (!eventToUpdate || eventToUpdate.owner.toHexString() !== userId) {
+    if (
+      !eventToUpdate ||
+      eventToUpdate.owner.toHexString() !== user._id.toHexString()
+    ) {
       throw new Error('Unauthorized or event not found');
     }
 
