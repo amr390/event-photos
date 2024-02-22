@@ -212,3 +212,15 @@ export async function getActivity(userId: string) {
     throw error;
   }
 }
+
+export async function simulateWebHook(userId: string, providerId: string) {
+  try {
+    connectToDB();
+
+    const dbUser = await User.findById(userId);
+  } catch (error) {
+    console.error(
+      'Failed to simulate webhook to update db user with providerId',
+    );
+  }
+}

@@ -8,7 +8,7 @@ export type UpdateUserPayload = {
 };
 
 export type CreateUserPayload = {
-  clerkId: string;
+  providerId: string;
   email: string;
   firstName: string;
   lastName: string;
@@ -17,7 +17,7 @@ export type CreateUserPayload = {
 
 // ====== USER PARAMS
 export type CreateUserParams = {
-  clerkId: string;
+  providerId: string;
   firstName: string;
   lastName: string;
   username: string;
