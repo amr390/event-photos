@@ -45,7 +45,7 @@ export const communityTabs = [
 
 export const headerLinks = [
   { route: '/', label: 'Home' },
-  { route: '/event/create', label: 'Create Event' },
+  { route: '/events/create', label: 'Create Event' },
   { route: '/profile', label: 'Profile' },
 ];
 

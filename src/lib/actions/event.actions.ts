@@ -26,7 +26,7 @@ const populateEvent = (query: any) => {
     .populate({
       path: 'owner',
       model: User,
-      select: '_id firstName lastName',
+      select: '_id firstName lastName imageUrl',
     })
     .populate({ path: 'category', model: Category, select: '_id name' });
 };
@@ -36,9 +36,9 @@ export async function createEvent({ userId, event, path }: CreateEventParams) {
     await connectToDB();
 
     const owner = await User.findOne({ id: userId });
-
     if (!owner) throw new Error('Owner not found');
 
+    debugger;
     revalidatePath(path);
     const newEvent = await Event.create({
       ...event,
@@ -70,8 +70,12 @@ export async function updateEvent({ userId, event, path }: UpdateEventParams) {
     await connectToDB();
 
     const eventToUpdate = await Event.findById(event._id);
+    const user = await User.findOne({ id: userId });
 
-    if (!eventToUpdate || eventToUpdate.owner.toHexString() !== userId) {
+    if (
+      !eventToUpdate ||
+      eventToUpdate.owner.toHexString() !== user._id.toHexString()
+    ) {
       throw new Error('Unauthorized or event not found');
     }
 

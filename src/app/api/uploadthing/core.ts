@@ -2,10 +2,11 @@ import { currentUser } from '@clerk/nextjs';
 import { createUploadthing, type FileRouter } from 'uploadthing/next';
 
 const f = createUploadthing();
+// const getUser = async (req: Request) => Promise.resolve({ userId: 'fakeId' });
 const getUser = async () => await currentUser();
 
 // FileRouter for your app, can contain multiple FileRoutes
-export const ourFileRouter = {
+export const uploadThingRouter = {
   // Define as many FileRoutes as you like, each with a unique routeSlug
   imageUploader: f({ image: { maxFileSize: '4MB', maxFileCount: 1 } })
     // Set permissions and file types for this FileRoute
@@ -19,15 +20,11 @@ export const ourFileRouter = {
       // Whatever is returned here is accessible in onUploadComplete as `metadata`
       return { userId: user.id };
     })
-    .onUploadComplete(async ({ metadata, file }) => {
+    .onUploadComplete(({ metadata, file }) => {
       // This code RUNS ON YOUR SERVER after upload
-      console.log('Upload complete for userId:', metadata.userId);
-
-      console.log('file url', file.url);
-
       // !!! Whatever is returned here is sent to the clientside `onClientUploadComplete` callback
       return { uploadedBy: metadata.userId };
     }),
 } satisfies FileRouter;
 
-export type OurFileRouter = typeof ourFileRouter;
+export type UploadThingRouter = typeof uploadThingRouter;

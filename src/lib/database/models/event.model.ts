@@ -5,11 +5,11 @@ export interface IEvent extends Document {
   title: string;
   description?: string;
   location?: string;
-  imageLink: string;
+  imageUrl: string;
   dateCreated: Date;
   lastUpdated: Date;
-  startDateTime: Date;
-  endDateTime: Date;
+  dateStart: Date;
+  dateEnd: Date;
   price: string;
   isFree: boolean;
   url?: string;
@@ -27,6 +27,7 @@ const EventSchema = new Schema({
   dateEnd: { type: Date, default: Date.now },
   price: { type: String },
   free: { type: Boolean, default: false },
+  imageUrl: { type: String },
   url: { type: String },
   category: { type: Schema.Types.ObjectId, ref: 'Category' },
   owner: { type: Schema.Types.ObjectId, ref: 'User' },

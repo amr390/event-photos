@@ -1,6 +1,7 @@
-import AccountProfile from "@/components/forms/AccountProfile";
-import { fetchUser } from "@/lib/actions/user.actions";
-import { currentUser } from "@clerk/nextjs";
+import AccountProfile from '@/components/forms/AccountProfile';
+import { fetchUser } from '@/lib/actions/user.actions';
+import { currentUser } from '@clerk/nextjs';
+import { redirect } from 'next/navigation';
 
 async function Page() {
   const user = await currentUser();
@@ -8,12 +9,16 @@ async function Page() {
 
   const userInfo = await fetchUser(user.id);
 
+  if (userInfo.onboarded) {
+    redirect('/');
+  }
+
   const userData = {
     id: user.id,
     objectId: userInfo?._id,
     username: userInfo?.username || user.username,
-    name: userInfo?.name || user.firstName || "",
-    bio: userInfo?.bio || "",
+    name: userInfo?.name || user.firstName || '',
+    bio: userInfo?.bio || '',
     image: userInfo?.image || user.imageUrl,
   };
 
@@ -24,7 +29,7 @@ async function Page() {
         Complete your profile now to use event photos
       </p>
       <section className="mt-9 bg-dark-2 p-10">
-        <AccountProfile {...{ user: userData, btnTitle: "title" }} />
+        <AccountProfile {...{ user: userData, btnTitle: 'title' }} />
       </section>
     </main>
   );

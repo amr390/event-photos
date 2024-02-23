@@ -3,6 +3,7 @@ import { auth } from '@clerk/nextjs';
 import Link from 'next/link';
 import Image from 'next/image';
 import { formatDateTime } from '@/lib/utils';
+import { DeleteConfirmation } from '../shared/DeleteConfirmation';
 
 type CardProps = {
   event: IEvent;
@@ -11,20 +12,20 @@ type CardProps = {
 };
 
 const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
-  const { userId } = auth();
+  const { sessionClaims } = auth();
 
-  const isEventCreator = userId === event.owner._id;
+  const isEventCreator = sessionClaims?.userId === event.owner._id;
 
   return (
     <div className="group relative flex min-h-[380px] w-pull max-w-[400px] flex-col overflow-hidden rounded-xl bg-white shadow-md transition-all hover:shadow-lg md:min-h-[438px]">
       <Link
         href={`/events/${event._id}`}
-        style={{ backgroundImage: `url(${event.imageLink})` }}
+        style={{ backgroundImage: `url(${event.imageUrl})` }}
         className="flex-center flex-grow bg-gray-50 bg-cover bg-center text-grey-500"
       />
       {isEventCreator && !hidePrice && (
         <div className="absolute right-2 top-2 flex flex-col gap-4 rounded-xl bg-white p-3 shadow-sm transition-all">
-          <Link href={`/events/${event.id}/update`}>
+          <Link href={`/events/${event._id}/update`}>
             <Image
               src="/assets/icons/edit.svg"
               alt="edit"
@@ -32,7 +33,7 @@ const EventCard = ({ event, hasOrderLink, hidePrice }: CardProps) => {
               height={20}
             />
           </Link>
-          {/* <DeleteConfirmation eventId={event.id}/> */}
+          <DeleteConfirmation eventId={event.id} />
         </div>
       )}
 
