@@ -1,27 +1,27 @@
-"use client";
+'use client';
 
-import { useForm } from "react-hook-form";
-import * as z from "zod";
-import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from 'react-hook-form';
+import * as z from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { Button } from "@/components/ui/button";
+import { Button } from '@/components/ui/button';
 import {
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
-} from "@/components/ui/form";
-import { Input } from "@/components/ui/input";
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 
-import { UserValidation } from "@/lib/validations/user";
-import Image from "next/image";
-import { Textarea } from "../ui/textarea";
-import { useState } from "react";
-import { isBase64Image } from "@/lib/utils";
-import { useUploadThing } from "@/lib/uploadthing";
-import { updateUser } from "@/lib/actions/user.actions";
-import { usePathname, useRouter } from "next/navigation";
+import { UserValidation } from '@/lib/validations/user';
+import Image from 'next/image';
+import { Textarea } from '../ui/textarea';
+import { useState } from 'react';
+import { isBase64Image } from '@/lib/utils';
+import { useUploadThing } from '@/lib/uploadthing';
+import { updateUser } from '@/lib/actions/user.actions';
+import { usePathname, useRouter } from 'next/navigation';
 
 interface Props {
   user: {
@@ -38,17 +38,17 @@ interface Props {
 const AccountProfile = ({ user }: Props) => {
   const router = useRouter();
   const pathname = usePathname();
-  const { startUpload } = useUploadThing("media");
+  const { startUpload } = useUploadThing('imageUploader');
 
   const [files, setFiles] = useState<File[]>([]);
 
   const form = useForm({
     resolver: zodResolver(UserValidation),
     defaultValues: {
-      profile_photo: user?.image || "",
-      name: user?.name || "",
-      username: user?.username || "",
-      bio: user?.bio || "",
+      profile_photo: user?.image || '',
+      name: user?.name || '',
+      username: user?.username || '',
+      bio: user?.bio || '',
     },
   });
 
@@ -65,10 +65,10 @@ const AccountProfile = ({ user }: Props) => {
 
       setFiles(Array.from(e.target.files));
 
-      if (!file.type.includes("image")) return;
+      if (!file.type.includes('image')) return;
 
       fileReader.onload = async (event) => {
-        const imageDataUrl = event.target?.result?.toString() || "";
+        const imageDataUrl = event.target?.result?.toString() || '';
 
         fieldChange(imageDataUrl);
       };
@@ -96,10 +96,10 @@ const AccountProfile = ({ user }: Props) => {
       path: pathname,
     });
 
-    if (pathname === "/profile/edit") {
+    if (pathname === '/profile/edit') {
       router.back();
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
