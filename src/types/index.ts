@@ -10,8 +10,8 @@ export type UpdateUserPayload = {
 export type CreateUserPayload = {
   providerId: string;
   email: string;
-  firstName: string;
-  lastName: string;
+  username: string;
+  name: string;
   image: string;
 };
 

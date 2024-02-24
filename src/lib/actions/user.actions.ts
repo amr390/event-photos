@@ -222,8 +222,11 @@ export async function simulateWebHook({ action }: { action: string }) {
       const userPayload = {
         providerId: user?.id!,
         email: user?.emailAddresses[0]?.emailAddress!,
-        firstName: user?.firstName!,
-        lastName: user?.lastName!,
+        username: user?.username!,
+        name:
+          user?.firstName ||
+          user?.username ||
+          user?.emailAddresses[0]?.emailAddress!,
         image: user?.imageUrl!,
       };
 
