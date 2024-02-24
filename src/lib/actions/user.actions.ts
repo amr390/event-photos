@@ -1,15 +1,16 @@
 'use server';
 
+import { CreateUserPayload, UpdateUserPayload } from '@/types';
+import { currentUser } from '@clerk/nextjs/server';
+import { FilterQuery, SortOrder } from 'mongoose';
 import { revalidatePath } from 'next/cache';
-import User from '../database/models/user.model';
 import { connectToDB } from '../database/';
 import Community from '../database/models/community.model';
-import Thread from '../database/models/thread.model';
-import { FilterQuery, SortOrder } from 'mongoose';
-import { handleError } from '../utils';
-import { CreateUserPayload, UpdateUserPayload } from '@/types';
 import Event from '../database/models/event.model';
 import Order from '../database/models/order.model';
+import Thread from '../database/models/thread.model';
+import User from '../database/models/user.model';
+import { handleError } from '../utils';
 
 export async function createUser(user: CreateUserPayload) {
   try {
@@ -23,7 +24,7 @@ export async function createUser(user: CreateUserPayload) {
 }
 
 export async function updateUser({
-  userId,
+  providerId,
   username,
   name,
   bio,
@@ -34,7 +35,7 @@ export async function updateUser({
 
   try {
     await User.findOneAndUpdate(
-      { id: userId },
+      { providerId: providerId },
       { username: username.toLowerCase(), name, bio, image, onboarded: true },
       { upsert: true },
     );
@@ -213,14 +214,34 @@ export async function getActivity(userId: string) {
   }
 }
 
-export async function simulateWebHook(userId: string, providerId: string) {
+export async function simulateWebHook({ action }: { action: string }) {
   try {
     connectToDB();
+    const user = await currentUser();
+    if (action === 'create') {
+      const userPayload = {
+        providerId: user?.id!,
+        email: user?.emailAddresses[0]?.emailAddress!,
+        firstName: user?.firstName!,
+        lastName: user?.lastName!,
+        image: user?.imageUrl!,
+      };
 
-    const dbUser = await User.findById(userId);
+      await createUser(userPayload);
+    } else if (action === 'update') {
+      const userPayload = {
+        providerId: user?.id!,
+        name: user?.firstName!,
+        username: user?.username!,
+        image: user?.imageUrl!,
+      };
+
+      await updateUser(userPayload);
+    }
   } catch (error) {
     console.error(
       'Failed to simulate webhook to update db user with providerId',
+      error,
     );
   }
 }

@@ -92,7 +92,7 @@ const AccountProfile = ({ user }: Props) => {
       name: values.name,
       bio: values.bio,
       image: values.profile_photo,
-      userId: user.id,
+      providerId: user.id,
       path: pathname,
     });
 

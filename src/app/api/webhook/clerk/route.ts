@@ -79,7 +79,7 @@ export async function POST(req: Request) {
     console.log('User updated from clerk, calling the webhook');
 
     const user = {
-      userId: id,
+      providerId: id,
       email: email_addresses[0].email_address,
       name: first_name,
       username: username || '',

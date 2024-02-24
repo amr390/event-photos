@@ -1,5 +1,5 @@
 export type UpdateUserPayload = {
-  userId: string;
+  providerId: string;
   username: string;
   name: string;
   bio?: string;
