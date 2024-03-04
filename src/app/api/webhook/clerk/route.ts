@@ -5,6 +5,7 @@ import { clerkClient } from '@clerk/nextjs';
 import { WebhookEvent } from '@clerk/nextjs/server';
 import { headers } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { uuidv4 } from '@/lib/utils';
 
 export async function POST(req: Request) {
   const WEBHOOK_SECRET = process.env.WEBHOOK_SECRET;
@@ -54,9 +55,8 @@ export async function POST(req: Request) {
     const user = {
       providerId: id,
       email: email_addresses[0].email_address,
-      username: username,
-      firstName: first_name,
-      lastName: last_name,
+      username: username || uuidv4(),
+      name: first_name,
       image: image_url,
     };
 

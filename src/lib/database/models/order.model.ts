@@ -1,4 +1,4 @@
-import { Document, Schema, model, models } from "mongoose";
+import { Document, Schema, model, models } from 'mongoose';
 
 export interface IOrder extends Document {
   datePlaced: Date;
@@ -23,28 +23,13 @@ export type IOrderItem = {
 };
 
 const OrderSchema = new Schema({
-  datePlaced: {
-    type: Date,
-    default: Date.now,
-  },
-  stripeId: {
-    type: String,
-    required: true,
-    unique: true,
-  },
-  totalAmount: {
-    type: String,
-  },
-  event: {
-    type: Schema.Types.ObjectId,
-    ref: "Event",
-  },
-  customer: {
-    type: Schema.Types.ObjectId,
-    ref: "User",
-  },
+  datePlaced: { type: Date, default: Date.now },
+  stripeId: { type: String, required: true, unique: true },
+  totalAmount: { type: String },
+  event: { type: Schema.Types.ObjectId, ref: 'Event' },
+  customer: { type: Schema.Types.ObjectId, ref: 'User' },
 });
 
-const Order = models.Order || model("Order", OrderSchema);
+const Order = models.Order || model('Order', OrderSchema);
 
 export default Order;
