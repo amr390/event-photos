@@ -74,3 +74,5 @@ const Orders = async ({ searchParams }: SearchParamProps) => {
     </>
   );
 };
+
+export default Orders;
